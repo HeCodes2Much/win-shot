@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # /usr/bin/i3-maim
 #
 # simple screenshot-script using maim.
