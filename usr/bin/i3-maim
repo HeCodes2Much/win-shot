@@ -4,15 +4,23 @@
 # simple screenshot-script using maim.
 
 _conf=$HOME/.config/i3/i3-maim.conf
+_name=$(date +%s)
 
 if ! [ -f $_conf ]; then
-	echo "maim_dir=$(xdg-user-dir PICTURES)" > $_conf
+	echo "maim_dir=$(xdg-user-dir PICTURES)" >> $_conf
+	echo "xclip_cmd=true" >> $_conf
 fi
 
 source $_conf
 
 if ! [ -d $maim_dir ]; then
 	mkdir -p $maim_dir
+fi
+
+if ! [ -z $xclip_cmd ]; then
+	clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
+else
+	clip=""
 fi
 
 if ! [[ -z "$2" ]]; then
@@ -23,19 +31,20 @@ fi
 
 case "$1" in
 	--fullscreen|-f|$NULL)
-	  $cmd "$maim_dir/$(date +%s).png" &&
+		$cmd "$maim_dir/$_name.png" && $clip &&
 		sleep 1 &&
 		notify-send "screenshot has been saved in $maim_dir" -a "i3-maim"
 		;;
 	--window|-w)
-		$cmd -i $(xdotool getactivewindow) "$maim_dir/$(date +%s).png" &&
+		$cmd -i $(xdotool getactivewindow) "$maim_dir/$_name.png" && $clip &&
 		sleep 1 &&
 		notify-send "screenshot has been saved in $maim_dir" -a "i3-maim"
 		;;
 	--select|-s)
-		notify-send 'select an area for the screenshot' -a "i3-maim" &
-		$cmd -s "$maim_dir/$(date +%s).png" &&
-		sleep 1 && notify-send "screenshot has been saved in $maim_dir" -a "i3-maim"
+		notify-send 'select an area for the screenshot' -a "i3-maim" &&
+		$cmd -s "$maim_dir/$_name.png" && $clip &&
+		sleep 1 &&
+		notify-send "screenshot has been saved in $maim_dir" -a "i3-maim"
 		;;
 	--help|-h)
 		echo "
