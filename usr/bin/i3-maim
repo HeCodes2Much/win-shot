@@ -18,7 +18,12 @@ if ! [ -d $maim_dir ]; then
 fi
 
 if ! [ -z $xclip_cmd ]; then
-	clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
+	check="pacman -Qs xclip"
+	if [ -n "$check" ]; then
+		clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
+	else
+		clip=""
+	fi
 else
 	clip=""
 fi
