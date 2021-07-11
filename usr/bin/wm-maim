@@ -7,25 +7,25 @@ _conf=$HOME/.config/wm-maim/config
 _name=$(date +%s)
 
 if ! [ -f $_conf ]; then
-	echo "maim_dir=$(xdg-user-dir PICTURES)" >> $_conf
-	echo "xclip_cmd=true" >> $_conf
+    echo "maim_dir=$(xdg-user-dir PICTURES)" >> $_conf
+    echo "xclip_cmd=true" >> $_conf
 fi
 
 source $_conf
 
 if ! [ -d $maim_dir ]; then
-	mkdir -p $maim_dir
+    mkdir -p $maim_dir
 fi
 
 if ! [ -z $xclip_cmd ]; then
-	check="pacman -Qs xclip"
-	if [ -n "$check" ]; then
-		clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
-	else
-		clip=""
-	fi
+    check="pacman -Qs xclip"
+    if [ -n "$check" ]; then
+        clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
+    else
+        clip=""
+    fi
 else
-	clip=""
+    clip=""
 fi
 
 if ! [[ -z "$2" ]]; then
