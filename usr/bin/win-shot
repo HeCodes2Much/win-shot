@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # /usr/bin/win-shot
 #
-# simple screenshot-script using maim.
+# simple screenshot-script using imagemagick.
 
 _conf=$HOME/.config/win-shot/config
 _name=$(date +%s)
