@@ -7,20 +7,20 @@ _conf=$HOME/.config/win-shot/config
 _name=$(date +%s)
 
 if ! [ -f $_conf ]; then
-    echo "maim_dir=$(xdg-user-dir PICTURES)" >> $_conf
+    echo "winshot_dir=$(xdg-user-dir PICTURES)" >> $_conf
     echo "xclip_cmd=true" >> $_conf
 fi
 
 source $_conf
 
-if ! [ -d $maim_dir ]; then
-    mkdir -p $maim_dir
+if ! [ -d $winshot_dir ]; then
+    mkdir -p $winshot_dir
 fi
 
 if ! [ -z $xclip_cmd ]; then
     check="pacman -Qs xclip"
     if [ -n "$check" ]; then
-        clip="xclip -selection clipboard -t image/png $maim_dir/$_name.png"
+        clip="xclip -selection clipboard -t image/png $winshot_dir/$_name.png"
     else
         clip=""
     fi
@@ -36,20 +36,20 @@ fi
 
 case "$1" in
 	--fullscreen|-f|$NULL)
-		$cmd -screen -window root "$maim_dir/$_name.png" && $clip &&
+		$cmd -screen -window root "$winshot_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
+		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
 		;;
 	--window|-w)
-		$cmd -screen -window $(xdotool selectwindow) "$maim_dir/$_name.png" && $clip &&
+		$cmd -screen -window $(xdotool selectwindow) "$winshot_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
+		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
 		;;
 	--select|-s)
 		notify-send 'select an area for the screenshot' -a "win-shot" &&
-		$cmd "$maim_dir/$_name.png" && $clip &&
+		$cmd "$winshot_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
+		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
 		;;
 	--help|-h)
 		echo "
@@ -66,7 +66,7 @@ by adding the number of seconds, like for example:
 Default option is 'full screen'.
 
 The file destination can be set in ${_conf}.
-Default is $maim_dir
+Default is $winshot_dir
 "
 		;;
 	*)
@@ -88,7 +88,7 @@ by adding the number of seconds, like for example:
 Default option is 'full screen'.
 
 The file destination can be set in ${_conf}.
-Default is $maim_dir
+Default is $winshot_dir
 "
 	exit 2
 esac
