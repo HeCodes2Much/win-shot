@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# /usr/bin/wm-maim
+# /usr/bin/win-shot
 #
 # simple screenshot-script using maim.
 
-_conf=$HOME/.config/wm-maim/config
+_conf=$HOME/.config/win-shot/config
 _name=$(date +%s)
 
 if ! [ -f $_conf ]; then
@@ -29,39 +29,39 @@ else
 fi
 
 if ! [[ -z "$2" ]]; then
-    cmd="maim -d $2"
+    cmd="import -delay $2"
 else
-    cmd='maim'
+    cmd='import'
 fi
 
 case "$1" in
 	--fullscreen|-f|$NULL)
-		$cmd "$maim_dir/$_name.png" && $clip &&
+		$cmd -screen -window root "$maim_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "wm-maim"
+		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
 		;;
 	--window|-w)
-		$cmd -i $(xdotool getactivewindow) "$maim_dir/$_name.png" && $clip &&
+		$cmd -screen -window $(xdotool selectwindow) "$maim_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "wm-maim"
+		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
 		;;
 	--select|-s)
-		notify-send 'select an area for the screenshot' -a "wm-maim" &&
-		$cmd -s "$maim_dir/$_name.png" && $clip &&
+		notify-send 'select an area for the screenshot' -a "win-shot" &&
+		$cmd "$maim_dir/$_name.png" && $clip &&
 		sleep 1 &&
-		notify-send "screenshot has been saved in $maim_dir" -a "wm-maim"
+		notify-send "screenshot has been saved in $maim_dir" -a "win-shot"
 		;;
 	--help|-h)
 		echo "
 available options:
--f | --fullscreen    full screen
--w | --window  active window
--s | --select  selection
--h | --help    display this information
+-f | --fullscreen       full screen
+-w | --window           active window
+-s | --select           selection
+-h | --help             display this information
 
 The -f or -w options can be used with a delay
 by adding the number of seconds, like for example:
-'wm-maim -w 5'
+'win-shot -w 5'
 
 Default option is 'full screen'.
 
@@ -71,19 +71,19 @@ Default is $maim_dir
 		;;
 	*)
 		echo "
-== ! wm-maim: missing or wrong argument ! ==
+== ! win-shot: missing or wrong argument ! ==
 
 available options:
--f | --fullscreen    full screen
--w | --window  active window
--s | --select  selection
--h | --help    display this information
+-f | --fullscreen       full screen
+-w | --window           active window
+-s | --select           selection
+-h | --help             display this information
 
 Default option is 'full screen'.
 
 The -f or -w options can be used with a delay
 by adding the number of seconds, like for example:
-'wm-maim -w 5'
+'win-shot -w 5'
 
 Default option is 'full screen'.
 
