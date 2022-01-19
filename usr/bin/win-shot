@@ -29,9 +29,9 @@ else
 fi
 
 if ! [[ -z "$2" ]]; then
-    cmd="import -delay $2"
+    cmd="magick import -delay $2"
 else
-    cmd='import'
+    cmd='magick import'
 fi
 
 case "$1" in
