@@ -7,52 +7,56 @@ _conf=$HOME/.config/win-shot/config
 _name=$(date +%s)
 
 if ! [ -f $_conf ]; then
-    echo "winshot_dir=$(xdg-user-dir PICTURES)" >> $_conf
-    echo "xclip_cmd=true" >> $_conf
+  echo "winshot_dir=$(xdg-user-dir PICTURES)" >>$_conf
+  echo "xclip_cmd=true" >>$_conf
 fi
 
 source $_conf
 
 if ! [ -d $winshot_dir ]; then
-    mkdir -p $winshot_dir
+  mkdir -p $winshot_dir
 fi
 
 if ! [ -z $xclip_cmd ]; then
-    check="pacman -Qs xclip"
-    if [ -n "$check" ]; then
-        clip="xclip -selection clipboard -t image/png $winshot_dir/$_name.png"
-    else
-        clip=""
-    fi
-else
+  check="pacman -Qs xclip"
+  if [ -n "$check" ]; then
+    clip="xclip -selection clipboard -t image/png $winshot_dir/$_name.png"
+  else
     clip=""
+  fi
+else
+  clip=""
 fi
 
 if ! [[ -z "$2" ]]; then
-    cmd="magick import -delay $2"
+  cmd="magick import -delay $2"
 else
-    cmd='magick import'
+  cmd='magick import'
 fi
 
+function editimage() {
+  convert "$@" -bordercolor '#c5a6ff' -border 6 \( +clone -background '#283036' -shadow 80x3+2+2 \) +swap -background '#e5e9f0' -layers merge +repage "$@"
+}
+
 case "$1" in
-	--fullscreen|-f|$NULL)
-		$cmd -screen -window root "$winshot_dir/$_name.png" && $clip &&
-		sleep 1 &&
-		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
-		;;
-	--window|-w)
-		$cmd -screen -window $(xdotool selectwindow) "$winshot_dir/$_name.png" && $clip &&
-		sleep 1 &&
-		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
-		;;
-	--select|-s)
-		notify-send 'select an area for the screenshot' -a "win-shot" &&
-		$cmd "$winshot_dir/$_name.png" && $clip &&
-		sleep 1 &&
-		notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
-		;;
-	--help|-h)
-		echo "
+--fullscreen | -f | $NULL)
+  $cmd -screen -window root "$winshot_dir/$_name.png" && editimage "$winshot_dir/$_name.png" && $clip
+  sleep 1 &&
+    notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
+  ;;
+--window | -w)
+  $cmd -screen -window $(xdotool selectwindow) "$winshot_dir/$_name.png" && editimage "$winshot_dir/$_name.png" && $clip &&
+    sleep 1 &&
+    notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
+  ;;
+--select | -s)
+  notify-send 'select an area for the screenshot' -a "win-shot" &&
+    $cmd "$winshot_dir/$_name.png" && editimage "$winshot_dir/$_name.png" && $clip &&
+    sleep 1 &&
+    notify-send "screenshot has been saved in $winshot_dir" -a "win-shot"
+  ;;
+--help | -h)
+  echo "
 available options:
 -f | --fullscreen       full screen
 -w | --window           active window
@@ -68,9 +72,9 @@ Default option is 'full screen'.
 The file destination can be set in ${_conf}.
 Default is $winshot_dir
 "
-		;;
-	*)
-		echo "
+  ;;
+*)
+  echo "
 == ! win-shot: missing or wrong argument ! ==
 
 available options:
@@ -90,7 +94,8 @@ Default option is 'full screen'.
 The file destination can be set in ${_conf}.
 Default is $winshot_dir
 "
-	exit 2
+  exit 2
+  ;;
 esac
 
 exit 0
